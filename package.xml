@@ -2,22 +2,21 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mw_ahrs_ros2</name>
-  <version>0.2.1</version>
-  <description>
-    The driver package for MW-AHRS IMU sensor.
-  </description>
+  <version>0.2.2</version>
+  <description>Driver package for MW-AHRS IMU</description>
   <maintainer email="shlee@roas.co.kr">Brighten Lee</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>libserial-dev</depend>
+
   <depend>rclcpp</depend>
   <depend>tf2</depend>
+  <depend>realtime_tools</depend>
+  <depend>std_srvs</depend>
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
-  <depend>std_srvs</depend>
-  <depend>realtime_tools</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
+
 project(mw_ahrs_ros2)
 
 if(NOT CMAKE_CXX_STANDARD)
@@ -12,13 +13,15 @@ endif()
 set(
   DEPENDENCIES
   rclcpp
-  rclcpp_lifecycle
   tf2
+  realtime_tools
+  std_srvs
   geometry_msgs
   sensor_msgs
-  std_srvs
-  realtime_tools
 )
+
+find_package(PkgConfig)
+pkg_check_modules(LIBSERIAL libserial)
 
 find_package(ament_cmake REQUIRED)
 foreach(Dependency IN ITEMS ${DEPENDENCIES})
@@ -26,11 +29,15 @@ foreach(Dependency IN ITEMS ${DEPENDENCIES})
 endforeach()
 
 add_executable(
-  mw_ahrs_driver_node 
+  mw_ahrs_driver_node
   src/mw_ahrs_driver.cpp
 )
-target_link_libraries(mw_ahrs_driver_node serial)
-target_include_directories(mw_ahrs_driver_node PRIVATE include)
+target_include_directories(mw_ahrs_driver_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${LIBSERIAL_INCLUDE_DIRS}
+)
+target_link_libraries(mw_ahrs_driver_node ${LIBSERIAL_LIBRARIES})
 ament_target_dependencies(mw_ahrs_driver_node ${DEPENDENCIES})
 
 install(

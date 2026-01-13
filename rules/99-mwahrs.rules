@@ -1,1 +1,2 @@
-KERNEL=="ttyUSB[0-9]*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE="0666", SYMLINK="mwahrs"
+KERNEL=="ttyUSB[0-9]*", MODE="0666", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="mwahrs"
+KERNEL=="ttyUSB[0-9]*", MODE="0666", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", SYMLINK+="mwahrs"

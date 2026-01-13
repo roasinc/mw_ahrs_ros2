@@ -18,7 +18,6 @@ def generate_launch_description():
                     {
                         "port": "/dev/ttyUSB0",
                         "frame_id": "imu_link",
-                        "version": "v2",
                     }
                 ],
             ),
