@@ -38,12 +38,12 @@ public:
 
   virtual ~MwAhrsDriver();
 
-  void Start();
+  void start_streaming();
 
-  void Reset(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
-             std::shared_ptr<std_srvs::srv::Trigger::Response> resp);
+  void handle_reset(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
+                    std::shared_ptr<std_srvs::srv::Trigger::Response> resp);
 
-  void Read();
+  void read_loop();
 
 private:
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr srv_reset_;

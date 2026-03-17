@@ -27,7 +27,7 @@ MwAhrsDriver::MwAhrsDriver(const std::string& node) : Node(node)
   this->get_parameter("frame_id", frame_id_);
 
   srv_reset_ = this->create_service<std_srvs::srv::Trigger>(
-      "imu/reset", std::bind(&MwAhrsDriver::Reset, this, std::placeholders::_1, std::placeholders::_2));
+      "imu/reset", std::bind(&MwAhrsDriver::handle_reset, this, std::placeholders::_1, std::placeholders::_2));
 
   pub_imu_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", 1);
   pub_rpy_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("imu/rpy", 1);
@@ -61,9 +61,9 @@ MwAhrsDriver::MwAhrsDriver(const std::string& node) : Node(node)
   serial_.FlushIOBuffers();
   rclcpp::sleep_for(std::chrono::milliseconds(100));
 
-  Start();
+  start_streaming();
   running_.store(true);
-  thread_ = std::thread(&MwAhrsDriver::Read, this);
+  thread_ = std::thread(&MwAhrsDriver::read_loop, this);
 }
 
 MwAhrsDriver::~MwAhrsDriver()
@@ -78,7 +78,7 @@ MwAhrsDriver::~MwAhrsDriver()
     serial_.Close();
 }
 
-void MwAhrsDriver::Start()
+void MwAhrsDriver::start_streaming()
 {
   std::lock_guard<std::mutex> lock(mutex_);
 
@@ -86,8 +86,8 @@ void MwAhrsDriver::Start()
   serial_.Write("sp=10\r\n");  // 10ms
 }
 
-void MwAhrsDriver::Reset(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
-                         std::shared_ptr<std_srvs::srv::Trigger::Response> resp)
+void MwAhrsDriver::handle_reset(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
+                                std::shared_ptr<std_srvs::srv::Trigger::Response> resp)
 {
   {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -103,13 +103,13 @@ void MwAhrsDriver::Reset(const std::shared_ptr<std_srvs::srv::Trigger::Request>,
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  Start();
+  start_streaming();
 
   resp->success = true;
   resp->message = "Reset completed.";
 }
 
-void MwAhrsDriver::Read()
+void MwAhrsDriver::read_loop()
 {
   while (running_.load() && rclcpp::ok())
   {

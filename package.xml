@@ -2,8 +2,8 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mw_ahrs_ros2</name>
-  <version>0.2.2</version>
-  <description>Driver package for MW-AHRS IMU</description>
+  <version>0.2.3</version>
+  <description>Driver package for MW-AHRS IMU data acquisition</description>
   <maintainer email="shlee@roas.co.kr">Brighten Lee</maintainer>
   <license>Apache License 2.0</license>
 
